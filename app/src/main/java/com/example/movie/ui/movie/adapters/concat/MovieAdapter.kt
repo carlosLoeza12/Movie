@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.movie.core.BaseViewHolder
-import com.example.movie.data.entities.Movie
+import com.example.movie.data.model.Movie
 import com.example.movie.databinding.MovieItemBinding
 import com.example.movie.utils.MovieConstants
 
-class MovieAdapter(private val movieList: List<Movie>, private val itemClickListener: onMovieClickListener ) : RecyclerView.Adapter<BaseViewHolder<*>>(){
+class MovieAdapter(private val movieList: List<Movie>,
+                   private val itemClickListener: onMovieClickListener ) : RecyclerView.Adapter<BaseViewHolder<*>>(){
 
     interface onMovieClickListener{
         fun onMovieClick(movie: Movie)
@@ -42,5 +43,6 @@ class MovieAdapter(private val movieList: List<Movie>, private val itemClickList
         override fun bind(item: Movie) {
             binding.imgMovie.load(MovieConstants.BASE_IMAGE+item.poster_path)
         }
+
     }
 }

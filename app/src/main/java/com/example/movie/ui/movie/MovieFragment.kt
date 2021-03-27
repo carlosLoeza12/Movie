@@ -4,20 +4,22 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.example.movie.R
 import com.example.movie.core.Resource
-import com.example.movie.data.entities.Movie
-import com.example.movie.data.remote.MovieDataSource
+import com.example.movie.data.local.AppDatabase
+import com.example.movie.data.local.MovieLocalDataSource
+import com.example.movie.data.model.Movie
+import com.example.movie.data.remote.MovieRemoteDataSource
 import com.example.movie.databinding.FragmentMovieBinding
 import com.example.movie.presentation.MovieViewModel
 import com.example.movie.presentation.MovieViewModelFactory
-import com.example.movie.repository.MovieRepositoryImpl
-import com.example.movie.repository.MovieService
-import com.example.movie.repository.RetrofitClient
+import com.example.movie.domain.MovieRepositoryImpl
+import com.example.movie.domain.RetrofitClient
 import com.example.movie.ui.movie.adapters.concat.MovieAdapter
 import com.example.movie.ui.movie.adapters.concat.PopularConcatAdapter
 import com.example.movie.ui.movie.adapters.concat.TopRatedConcatAdapter
@@ -33,7 +35,8 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
     private val viewModel by viewModels<MovieViewModel> {
         MovieViewModelFactory(
             MovieRepositoryImpl(
-                MovieDataSource(RetrofitClient.webservice)
+                MovieRemoteDataSource(RetrofitClient.webservice),
+                    MovieLocalDataSource(AppDatabase.getDatabase(requireContext()).movieDao())
             )
         )
     }
@@ -48,7 +51,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
                     Log.e("liveData", "Loading...")
                     binding.relativeProgressBar.visibility = View.VISIBLE
                 }
-                is Resource.Succes -> {
+                is Resource.Success -> {
                     binding.relativeProgressBar.visibility = View.GONE
                     Log.e("liveData", "upComing: ${result.data.first}")
                     conCatAdapter.apply {
@@ -60,6 +63,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
                 }
                 is Resource.Error -> {
                     binding.relativeProgressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Error: ${result.exception}", Toast.LENGTH_SHORT).show()
                     Log.e("liveData", "${result.exception}")
                 }
             }
@@ -79,46 +83,3 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
         findNavController().navigate(action)
     }
 }
-
-/*viewModel.fetchUpComingMovies().observe(viewLifecycleOwner, Observer {result->
-            when(result){
-                is Resource.Loading -> {
-                    Log.e("LiveData","Loading...")
-                }
-                is Resource.Succes -> {
-                    Log.e("LiveData","${result.data}")
-                }
-                is Resource.Error -> {
-                    Log.e("LiveData","${result.exception}")
-                }
-            }
-        })*/
-/*Nosotros creamos ese Factory con la interfaz del repositorio, no su implementación, pero nosotros
-//
-//debemos proveer la implementación del repositorio para que justamente este interfaz conozca de esa implementación
-//
-//y que después la podamos usar justamente acá, porque si no, cuando creamos una instancia no vas a
-//
-//ver en esta interfaz ÂCual implementación apuntar no a la hora de ir buscar los datos.
-//
-//Recuerden que justamente al ser un repositorio Esther, esta interfaz puede estar implementada en tanto
-//
-//un repositorio como en este caso Ještě, que es justamente el que va a buscar información al al servidor
-//
-//o haya implementado en otro repositorio que sea el encarga de buscar información localmente.
-//
-//Entonces de esta forma no sabe el ViewModel cuál de las dos implementaciones usar para esta clase.
-//
-//Entonces nosotros debemos proveerle desde el fragmento la implementación del interfaz que vamos
-//
-//a usar para traer los datos.
-//
-//
-//Fíjense que pueden estar tanto los datos localmente como en un repositorio, entonces ese repositorio
-//
-//puede tener dos implementaciones distintas y puede tener una sola interfaz porque los métodos son los
-//
-//mismos, tanto para tener información localmente como del servidor.
-//
-Entonces es muy importante que marquemos la implementación de la interfaz acá.v
- */
