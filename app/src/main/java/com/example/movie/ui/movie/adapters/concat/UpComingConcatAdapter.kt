@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.movie.core.BaseConcatHolder
 import com.example.movie.databinding.UpcomingMovieRowBinding
 
-class UpComingConcatAdapter(private val movieAdapter: MovieAdapter): RecyclerView.Adapter<BaseConcatHolder<*>>(){
+class UpComingConcatAdapter(private val movieAdapter: MovieAdapter, private val p: Int): RecyclerView.Adapter<BaseConcatHolder<*>>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseConcatHolder<*> {
         val itembinding = UpcomingMovieRowBinding.inflate(LayoutInflater.from(parent.context),parent, false)
@@ -23,6 +23,7 @@ class UpComingConcatAdapter(private val movieAdapter: MovieAdapter): RecyclerVie
 
     private inner class ConcatViewHolder(val binding: UpcomingMovieRowBinding): BaseConcatHolder<MovieAdapter>(binding.root){
         override fun bind(adapter: MovieAdapter) {
+            binding.rvUpcomingMovies.scrollToPosition(p)
             binding.rvUpcomingMovies.adapter = adapter
         }
     }

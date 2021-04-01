@@ -15,23 +15,24 @@ class MovieAdapter(private val movieList: List<Movie>,
                    private val itemClickListener: onMovieClickListener ) : RecyclerView.Adapter<BaseViewHolder<*>>(){
 
     interface onMovieClickListener{
-        fun onMovieClick(movie: Movie)
+        fun onMovieClick(movie: Movie, position: Int)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
-        val itemBinding = MovieItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
 
+        val itemBinding = MovieItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         val holder = MoviesViewHolder(itemBinding, parent.context)
 
         itemBinding.root.setOnClickListener {
             val position = holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
                     ?: return@setOnClickListener
-            itemClickListener.onMovieClick(movieList[position])
+            itemClickListener.onMovieClick(movieList[position], position)
         }
 
         return holder
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
+
         when(holder){
             is MoviesViewHolder -> holder.bind(movieList[position])
         }
@@ -39,7 +40,9 @@ class MovieAdapter(private val movieList: List<Movie>,
 
     override fun getItemCount(): Int = movieList.size
 
+
     private inner class MoviesViewHolder(val binding: MovieItemBinding, val context: Context): BaseViewHolder<Movie>(binding.root){
+
         override fun bind(item: Movie) {
             binding.imgMovie.load(MovieConstants.BASE_IMAGE+item.poster_path)
         }
