@@ -34,6 +34,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
     private var topRatedgPos: Int = 0
     private var popularPos: Int = 0
     private lateinit var shared: sharedPreferences
+    //probando
 
     private val viewModel by viewModels<MovieViewModel> {
         MovieViewModelFactory(
@@ -151,8 +152,8 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
     }
 
     override fun onDestroy() {
-        shared.deletePreferences()
         super.onDestroy()
+        shared.deletePreferences()
     }
 
 }
