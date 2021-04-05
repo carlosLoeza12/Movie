@@ -5,8 +5,9 @@ import com.example.movie.data.local.MovieLocalDataSource
 import com.example.movie.data.model.MovieList
 import com.example.movie.data.model.toMovieEntity
 import com.example.movie.data.remote.MovieRemoteDataSource
+import javax.inject.Inject
 
-class MovieRepositoryImpl(
+class MovieRepositoryImpl @Inject constructor(
     private val remoteDataSource: MovieRemoteDataSource,
     private val localDataSource: MovieLocalDataSource
 ) : MovieRepository {

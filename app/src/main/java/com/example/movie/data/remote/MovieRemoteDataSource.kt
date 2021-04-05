@@ -3,8 +3,9 @@ package com.example.movie.data.remote
 import com.example.movie.data.model.MovieList
 import com.example.movie.domain.MovieService
 import com.example.movie.utils.MovieConstants
+import javax.inject.Inject
 
-class MovieRemoteDataSource(private val movieService: MovieService) {
+class MovieRemoteDataSource @Inject constructor(private val movieService: MovieService) {
 
     suspend fun getUpComingMovies(): MovieList =
         movieService.getUpComingMovies(MovieConstants.API_KEY)

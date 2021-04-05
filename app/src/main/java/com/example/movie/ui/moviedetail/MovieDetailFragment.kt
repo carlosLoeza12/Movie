@@ -8,8 +8,9 @@ import coil.load
 import com.example.movie.R
 import com.example.movie.databinding.FragmentDetailMovieBinding
 import com.example.movie.utils.MovieConstants
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MovieDetailFragment : Fragment(R.layout.fragment_detail_movie) {
 
     lateinit var binding: FragmentDetailMovieBinding

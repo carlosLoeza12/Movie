@@ -1,13 +1,8 @@
 package com.example.movie.domain
 
 import com.example.movie.data.model.MovieList
-import com.example.movie.utils.MovieConstants
-import com.google.gson.GsonBuilder
-import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
-import retrofit2.converter.gson.GsonConverterFactory
-
 
 interface MovieService {
     @GET("movie/upcoming")
@@ -29,12 +24,4 @@ interface MovieService {
     ): MovieList
 }
 
-object RetrofitClient {
-    val webservice by lazy {
-        Retrofit.Builder()
-            .baseUrl(MovieConstants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .build().create(MovieService::class.java)
-    }
-}
 

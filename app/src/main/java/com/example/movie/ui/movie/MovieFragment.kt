@@ -11,21 +11,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import com.example.movie.R
 import com.example.movie.core.Resource
-import com.example.movie.data.local.AppDatabase
-import com.example.movie.data.local.MovieLocalDataSource
+import com.example.movie.data.local.MovieDao
 import com.example.movie.data.model.Movie
-import com.example.movie.data.remote.MovieRemoteDataSource
 import com.example.movie.databinding.FragmentMovieBinding
-import com.example.movie.domain.MovieRepositoryImpl
-import com.example.movie.domain.RetrofitClient
+import com.example.movie.domain.MovieService
 import com.example.movie.presentation.MovieViewModel
-import com.example.movie.presentation.MovieViewModelFactory
 import com.example.movie.ui.movie.adapters.concat.MovieAdapter
 import com.example.movie.ui.movie.adapters.concat.PopularConcatAdapter
 import com.example.movie.ui.movie.adapters.concat.TopRatedConcatAdapter
 import com.example.movie.ui.movie.adapters.concat.UpComingConcatAdapter
 import com.example.movie.utils.sharedPreferences
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieClickListener {
 
     private lateinit var binding: FragmentMovieBinding
@@ -36,20 +35,17 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
     private lateinit var shared: sharedPreferences
     //probando
 
-    private val viewModel by viewModels<MovieViewModel> {
-        MovieViewModelFactory(
-                MovieRepositoryImpl(
-                        MovieRemoteDataSource(RetrofitClient.webservice),
-                        MovieLocalDataSource(AppDatabase.getDatabase(requireContext()).movieDao())
-                )
-        )
-    }
+    @Inject
+    lateinit var movieDao: MovieDao
+
+    private val viewModel by viewModels<MovieViewModel> ()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMovieBinding.bind(view)
 
         initElements()
+
     }
 
     private fun initElements() {
@@ -115,6 +111,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
                         addAdapter(UpComingConcatAdapter(MovieAdapter(result.data.first.results, this@MovieFragment), upComingPos))
                         addAdapter(TopRatedConcatAdapter(MovieAdapter(result.data.second.results, this@MovieFragment), topRatedgPos))
                         addAdapter(PopularConcatAdapter(MovieAdapter(result.data.third.results, this@MovieFragment), popularPos))
+
                         viewModel.data.value = result.data
                     }
                     binding.recyclerMovies.adapter = conCatAdapter
