@@ -14,7 +14,6 @@ import com.example.movie.core.Resource
 import com.example.movie.data.local.MovieDao
 import com.example.movie.data.model.Movie
 import com.example.movie.databinding.FragmentMovieBinding
-import com.example.movie.domain.MovieService
 import com.example.movie.presentation.MovieViewModel
 import com.example.movie.ui.movie.adapters.concat.MovieAdapter
 import com.example.movie.ui.movie.adapters.concat.PopularConcatAdapter

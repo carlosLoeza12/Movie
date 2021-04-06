@@ -1,10 +1,6 @@
 package com.example.movie.utils
 
 import android.content.Context
-import com.example.movie.data.model.Movie
-import com.example.movie.data.model.MovieList
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class sharedPreferences(val context: Context) {
 

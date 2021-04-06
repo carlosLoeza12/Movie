@@ -9,18 +9,16 @@ import com.example.movie.utils.MovieConstants
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.DefineComponent
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.internal.managers.ApplicationComponentManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 //Tenemos que decirle donde va a vivir las instancias del modulo, atachandose al ciclo de vida del componente
+@InstallIn(SingletonComponent::class)
 @Module
-@InstallIn(ApplicationComponent::class)
 object AppModule {
 
     //Room proveemos la manera de crear las instancias

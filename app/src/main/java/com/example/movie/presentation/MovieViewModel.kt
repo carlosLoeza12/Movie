@@ -5,9 +5,12 @@ import androidx.lifecycle.*
 import com.example.movie.core.Resource
 import com.example.movie.data.model.MovieList
 import com.example.movie.domain.MovieRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class MovieViewModel @ViewModelInject constructor (private val movieRepository: MovieRepository) : ViewModel() {
+@HiltViewModel
+class MovieViewModel @Inject constructor (private val movieRepository: MovieRepository) : ViewModel() {
 
     val data = MutableLiveData<Triple<MovieList, MovieList, MovieList>>()
     fun fetchMainScreenMovies()= liveData(Dispatchers.IO) {
