@@ -9,12 +9,12 @@ data class Movie(
     val id: String,
     @SerializedName("adult")
     val adult: Boolean = false,
-    val backdrop_path: String = "",
+    val backdrop_path: String? = "",
     val original_title: String = "",
     val original_language: String = "",
     val overview: String = "",
     val popularity: Double = -1.0,
-    val poster_path: String = "",
+    val poster_path: String? = "",
     val release_date: String = "",
     val title: String = "",
     val video: Boolean = false,
@@ -35,7 +35,7 @@ data class MovieEntity(
     @ColumnInfo(name = "adult")
     val adult: Boolean = false,
     @ColumnInfo(name = "backdrop_path")
-    val backdrop_path: String = "",
+    val backdrop_path: String? = "",
     @ColumnInfo(name = "original_title")
     val original_title: String = "",
     @ColumnInfo(name = "original_language")
@@ -45,7 +45,7 @@ data class MovieEntity(
     @ColumnInfo(name = "popularity")
     val popularity: Double = -1.0,
     @ColumnInfo(name = "poster_path")
-    val poster_path: String = "",
+    val poster_path: String? = "",
     @ColumnInfo(name = "release_date")
     val release_date: String = "",
     @ColumnInfo(name = "title")

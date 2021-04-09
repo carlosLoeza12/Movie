@@ -2,9 +2,16 @@ package com.example.movie.presentation
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.example.movie.MoviePagedKeyDataSource
 import com.example.movie.core.Resource
+import com.example.movie.data.local.MovieDao
+import com.example.movie.data.model.Movie
 import com.example.movie.data.model.MovieList
 import com.example.movie.domain.MovieRepository
+import com.example.movie.domain.MovieService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -13,6 +20,35 @@ import javax.inject.Inject
 class MovieViewModel @Inject constructor (private val movieRepository: MovieRepository) : ViewModel() {
 
     val data = MutableLiveData<Triple<MovieList, MovieList, MovieList>>()
+    private var UpComingLiveData: LiveData<PagedList<Movie>>
+
+    @Inject
+    lateinit var movieService: MovieService
+
+
+    init {
+        Log.e("liveData", "init")
+        val config = PagedList.Config.Builder()
+            .setPageSize(10)
+            .setEnablePlaceholders(false)
+            .build()
+        UpComingLiveData =  initializedPagedListBuilder(config).build()
+    }
+
+    private fun initializedPagedListBuilder(config: PagedList.Config): LivePagedListBuilder<Int, Movie> {
+
+        val dataSourceFactory = object : DataSource.Factory<Int, Movie>(){
+            override fun create(): DataSource<Int, Movie> {
+                return MoviePagedKeyDataSource(movieService)
+            }
+
+        }
+
+        return LivePagedListBuilder<Int, Movie>(dataSourceFactory, config)
+    }
+
+    fun getMoviesUpcoming():LiveData<PagedList<Movie>> =  UpComingLiveData
+
     fun fetchMainScreenMovies()= liveData(Dispatchers.IO) {
         emit(Resource.Loading())
         try {
@@ -23,9 +59,7 @@ class MovieViewModel @Inject constructor (private val movieRepository: MovieRepo
             emit(Resource.Error(e))
         }
     }
-    init {
-        Log.e("liveData", "init")
-    }
+
 
 }
 

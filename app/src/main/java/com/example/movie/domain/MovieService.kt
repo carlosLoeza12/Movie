@@ -8,19 +8,22 @@ interface MovieService {
     @GET("movie/upcoming")
     suspend fun getUpComingMovies(
         @Query("api_key") apiKey: String,
-        @Query("language") language: String = "es-mx"
+        @Query("language") language: String = "es-mx",
+        @Query("page") page: Int
     ): MovieList
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("api_key") apiKey: String,
-        @Query("language") language: String = "es-mx"
+        @Query("language") language: String = "es-mx",
+        @Query("page") page: Int
     ): MovieList
 
     @GET("movie/popular")
     suspend fun getPopularMovies(
         @Query("api_key") apiKey: String,
-        @Query("language") language: String = "es-mx"
+        @Query("language") language: String = "es-mx",
+        @Query("page") page: Int
     ): MovieList
 }
 

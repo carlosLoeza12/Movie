@@ -2,10 +2,11 @@ package com.example.movie.ui.movie.adapters.concat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movie.MoviePagedAdapter
 import com.example.movie.core.BaseConcatHolder
 import com.example.movie.databinding.UpcomingMovieRowBinding
 
-class UpComingConcatAdapter(private val movieAdapter: MovieAdapter, private val p: Int): RecyclerView.Adapter<BaseConcatHolder<*>>(){
+class UpComingConcatAdapter(private val moviePagedAdapter: MoviePagedAdapter): RecyclerView.Adapter<BaseConcatHolder<*>>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseConcatHolder<*> {
         val itembinding = UpcomingMovieRowBinding.inflate(LayoutInflater.from(parent.context),parent, false)
@@ -14,17 +15,17 @@ class UpComingConcatAdapter(private val movieAdapter: MovieAdapter, private val 
 
     override fun onBindViewHolder(holder: BaseConcatHolder<*>, position: Int) {
         when(holder){
-            is ConcatViewHolder-> holder.bind(movieAdapter)
+            is ConcatViewHolder-> holder.bind(moviePagedAdapter)
         }
     }
 
     override fun getItemCount(): Int =1
     //Es uno por que le estamos pasando solo un adapter
 
-    private inner class ConcatViewHolder(val binding: UpcomingMovieRowBinding): BaseConcatHolder<MovieAdapter>(binding.root){
-        override fun bind(adapter: MovieAdapter) {
-            binding.rvUpcomingMovies.scrollToPosition(p)
-            binding.rvUpcomingMovies.adapter = adapter
+    private inner class ConcatViewHolder(val binding: UpcomingMovieRowBinding): BaseConcatHolder<MoviePagedAdapter>(binding.root){
+        override fun bind(moviePagedAdapter: MoviePagedAdapter) {
+           //binding.rvUpcomingMovies.scrollToPosition(p)
+            binding.rvUpcomingMovies.adapter = moviePagedAdapter
         }
     }
 }

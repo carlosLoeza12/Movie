@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.ConcatAdapter
+import com.example.movie.MoviePagedAdapter
 import com.example.movie.R
 import com.example.movie.core.Resource
 import com.example.movie.data.local.MovieDao
@@ -32,6 +34,7 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
     private var topRatedgPos: Int = 0
     private var popularPos: Int = 0
     private lateinit var shared: sharedPreferences
+    private lateinit var upComingConcatAdapter: UpComingConcatAdapter
     //probando
 
     @Inject
@@ -43,7 +46,9 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMovieBinding.bind(view)
 
-        initElements()
+        //initElements()
+        initRecycler()
+        upcoming()
 
     }
 
@@ -79,9 +84,9 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
                 }
 
                 conCatAdapter.apply {
-                    addAdapter(UpComingConcatAdapter(MovieAdapter(it.first.results, this@MovieFragment), upComingPos))
-                    addAdapter(TopRatedConcatAdapter(MovieAdapter(it.second.results, this@MovieFragment), topRatedgPos))
-                    addAdapter(PopularConcatAdapter(MovieAdapter(it.third.results, this@MovieFragment), popularPos))
+
+                    //addAdapter(TopRatedConcatAdapter(MovieAdapter(it.second.results, this@MovieFragment), topRatedgPos))
+                    //addAdapter(PopularConcatAdapter(MovieAdapter(it.third.results, this@MovieFragment), popularPos))
                 }
                 binding.recyclerMovies.adapter = conCatAdapter
 
@@ -107,9 +112,9 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
                     binding.relativeProgressBar.visibility = View.GONE
                     Log.e("liveData", "upComing: ${result.data.first}")
                     conCatAdapter.apply {
-                        addAdapter(UpComingConcatAdapter(MovieAdapter(result.data.first.results, this@MovieFragment), upComingPos))
-                        addAdapter(TopRatedConcatAdapter(MovieAdapter(result.data.second.results, this@MovieFragment), topRatedgPos))
-                        addAdapter(PopularConcatAdapter(MovieAdapter(result.data.third.results, this@MovieFragment), popularPos))
+                        //addAdapter(UpComingConcatAdapter(MovieAdapter(result.data.first.results, this@MovieFragment), upComingPos))
+                        //addAdapter(TopRatedConcatAdapter(MovieAdapter(result.data.second.results, this@MovieFragment), topRatedgPos))
+                        //addAdapter(PopularConcatAdapter(MovieAdapter(result.data.third.results, this@MovieFragment), popularPos))
 
                         viewModel.data.value = result.data
                     }
@@ -127,8 +132,8 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
     override fun onMovieClick(movie: Movie, position: Int) {
 
         val action = MovieFragmentDirections.actionMovieFragmentToDetailMovieFragment(
-                movie.poster_path,
-                movie.backdrop_path,
+                movie.poster_path.toString(),
+                movie.backdrop_path.toString(),
                 movie.vote_average.toFloat(),
                 movie.vote_count,
                 movie.overview,
@@ -150,6 +155,27 @@ class MovieFragment : Fragment(R.layout.fragment_movie), MovieAdapter.onMovieCli
     override fun onDestroy() {
         super.onDestroy()
         shared.deletePreferences()
+    }
+
+    private fun initRecycler(){
+
+        conCatAdapter = ConcatAdapter()
+        conCatAdapter.apply {
+            addAdapter(UpComingConcatAdapter(MoviePagedAdapter()))
+        }
+        binding.recyclerMovies.adapter = conCatAdapter
+    }
+
+    private fun upcoming(){
+
+        val adapter = MoviePagedAdapter()
+
+        viewModel.getMoviesUpcoming().observe(viewLifecycleOwner, Observer<PagedList<Movie>>  {
+            if(it!=null){
+               adapter.submitList(it)
+               conCatAdapter = ConcatAdapter(adapter)
+            }
+        })
     }
 
 }
